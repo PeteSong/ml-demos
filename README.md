@@ -3,6 +3,10 @@ Demos for AI/ML/DL/Generate AI while learning
 
 
 ## static check
+Install the static check tools.
+```shell
+pip install flake8 pylint mypy black isort bandit
+```
 
 Install the hooks of `pre-commit`
 ```shell
@@ -14,10 +18,10 @@ OR
 
 You cna manually run the following tools.
 ```shell
-flake8 ml-demos/
-pylint ml-demos/
-mypy ml-demos/
-black --check ml-demos/
-isort --check-only ml-demos/
-bandit -r ml-demos/
+flake8 ml_demos/
+pylint ml_demos/
+mypy ml_demos/
+black --check ml_demos/
+isort --check-only ml_demos/
+bandit -r ml_demos/
 ```
