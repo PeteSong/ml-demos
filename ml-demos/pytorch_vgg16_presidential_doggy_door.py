@@ -7,11 +7,9 @@ import torch.nn as nn
 import torchvision.transforms.v2 as transforms
 from PIL import Image
 from torch.optim import Adam
-from torch.utils.data import Dataset, DataLoader
-from torchvision.models import VGG16_Weights
-from torchvision.models import vgg16
-
-from utils import get_device, show_image, load_saved_model, save_model
+from torch.utils.data import DataLoader, Dataset
+from torchvision.models import VGG16_Weights, vgg16
+from utils import get_device, load_saved_model, save_model, show_image
 
 
 def load_and_process_image(img_path, pre_transforms, device, enhance_transforms=None, show_img=False):
@@ -43,10 +41,7 @@ def init_model(device):
     vgg_mdl.requires_grad_(False)
     print('VGG16 Frozen')
     N_CLASSES = 1
-    my_model = nn.Sequential(
-        vgg_mdl,
-        nn.Linear(1000, N_CLASSES)
-    )
+    my_model = nn.Sequential(vgg_mdl, nn.Linear(1000, N_CLASSES))
     my_model.to(device)
     # check the parameters
     # for idx, param in enumerate(my_model.parameters()):
@@ -79,13 +74,15 @@ class MyDataset(Dataset):
             for p in data_paths:
                 self.img_paths.append(p)
                 self.labels.append(label_tensor)
-        self.transforms = transforms.Compose([
-            transforms.RandomRotation(25),
-            # In MAC, `antialias` is not implemented for MPS
-            transforms.RandomResizedCrop(self.IMG_SIZE, scale=(.8, 1), ratio=(1, 1), antialias=False),
-            transforms.RandomHorizontalFlip(),
-            transforms.ColorJitter(brightness=.2, contrast=.2, saturation=.2, hue=.2)
-        ])
+        self.transforms = transforms.Compose(
+            [
+                transforms.RandomRotation(25),
+                # In MAC, `antialias` is not implemented for MPS
+                transforms.RandomResizedCrop(self.IMG_SIZE, scale=(0.8, 1), ratio=(1, 1), antialias=False),
+                transforms.RandomHorizontalFlip(),
+                transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.2),
+            ]
+        )
 
     def __getitem__(self, idx):
         img_path = self.img_paths[idx]
@@ -99,11 +96,11 @@ class MyDataset(Dataset):
 
 def load_presidential_dog_data(pre_transforms, device):
     n = 32
-    train_path = './data/presidential_doggy_door/train/'
+    train_path = '../data/presidential_doggy_door/train/'
     train_data = MyDataset(train_path, pre_transforms, device)
     train_loader = DataLoader(train_data, batch_size=n, shuffle=True)
 
-    valid_path = './data/presidential_doggy_door/valid/'
+    valid_path = '../data/presidential_doggy_door/valid/'
     valid_data = MyDataset(valid_path, pre_transforms, device)
     valid_loader = DataLoader(valid_data, batch_size=n)
 
@@ -111,7 +108,7 @@ def load_presidential_dog_data(pre_transforms, device):
 
 
 def load_vgg_classes():
-    vgg_classes = json.load(open('./data/imagenet_class_index.json'))
+    vgg_classes = json.load(open('../data/imagenet_class_index.json'))
     return vgg_classes
 
 
@@ -178,7 +175,7 @@ def presidential_doggy_door(model, pre_transforms, img_path):
 
 
 if __name__ == '__main__':
-    VGG_PRESIDENTIAL_DOGGY_DOOR_MODEL_PATH = './saved_models/vgg_presidential_doggy_door_model.pth'
+    VGG_PRESIDENTIAL_DOGGY_DOOR_MODEL_PATH = '../saved_models/vgg_presidential_doggy_door_model.pth'
     dvc = get_device()
 
     if os.path.exists(VGG_PRESIDENTIAL_DOGGY_DOOR_MODEL_PATH):
@@ -200,7 +197,7 @@ if __name__ == '__main__':
         print('\nAfter training, tuning the trained model ...')
         print('Un-frozen VGG16.')
         vgg_model.requires_grad_(True)
-        optimizer_for_tuning = Adam(mdl.parameters(), lr=.000001)
+        optimizer_for_tuning = Adam(mdl.parameters(), lr=0.000001)
         for epoch in range(2):
             print('Epoch: {}'.format(epoch))
             train(mdl, train_loader, loss_function, optimizer_for_tuning)
@@ -208,7 +205,7 @@ if __name__ == '__main__':
         # predict(mdl, pre_trans, './data/presidential_doggy_door/valid/bo/bo_20.jpg')
         # predict(mdl, pre_trans, './data/presidential_doggy_door/valid/not_bo/121.jpg')
         save_model(mdl, VGG_PRESIDENTIAL_DOGGY_DOOR_MODEL_PATH)
-    presidential_doggy_door(mdl, pre_trans, './data/presidential_doggy_door/valid/bo/bo_27.jpg')
-    presidential_doggy_door(mdl, pre_trans, './data/presidential_doggy_door/valid/bo/bo_29.jpg')
-    presidential_doggy_door(mdl, pre_trans, './data/presidential_doggy_door/valid/not_bo/126.jpg')
-    presidential_doggy_door(mdl, pre_trans, './data/presidential_doggy_door/valid/not_bo/140.jpg')
+    presidential_doggy_door(mdl, pre_trans, '../data/presidential_doggy_door/valid/bo/bo_27.jpg')
+    presidential_doggy_door(mdl, pre_trans, '../data/presidential_doggy_door/valid/bo/bo_29.jpg')
+    presidential_doggy_door(mdl, pre_trans, '../data/presidential_doggy_door/valid/not_bo/126.jpg')
+    presidential_doggy_door(mdl, pre_trans, '../data/presidential_doggy_door/valid/not_bo/140.jpg')

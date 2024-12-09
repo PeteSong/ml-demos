@@ -3,7 +3,7 @@ from sklearn import datasets
 from sklearn.ensemble import BaggingClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
-from sklearn.tree import plot_tree, DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier, plot_tree
 
 data = datasets.load_wine(as_frame=True)
 

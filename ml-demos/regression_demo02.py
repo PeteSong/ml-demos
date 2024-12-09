@@ -4,7 +4,7 @@ from sklearn.preprocessing import StandardScaler
 
 
 def multiple_regression():
-    df = pandas.read_csv('../datasets/car_data.csv')
+    df = pandas.read_csv('../data/car_data.csv')
     X = df[['Weight', 'Volume']]
     y = df['CO2']
 
@@ -19,7 +19,7 @@ multiple_regression()
 
 def multiple_regression_with_scale():
     scaler = StandardScaler()
-    df = pandas.read_csv('../datasets/car_data.csv')
+    df = pandas.read_csv('../data/car_data.csv')
     X = df[['Weight', 'Volume']]
     # print(X)
     scaled_X = scaler.fit_transform(X)

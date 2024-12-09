@@ -2,9 +2,7 @@ import json
 
 import torch
 import torchvision.io as tv_io
-from torchvision.models import VGG16_Weights
-from torchvision.models import vgg16
-
+from torchvision.models import VGG16_Weights, vgg16
 from utils import get_device, show_image
 
 
@@ -21,7 +19,7 @@ def load_model_and_pretransforms(device):
 
 
 def load_vgg_classes():
-    vgg_classes = json.load(open('./data/imagenet_class_index.json'))
+    vgg_classes = json.load(open('../data/imagenet_class_index.json'))
     return vgg_classes
 
 
@@ -71,10 +69,10 @@ def doggy_door(model, pre_transforms, image_path):
 if __name__ == '__main__':
     dvc = get_device()
     mdl, pre_trans = load_model_and_pretransforms(dvc)
-    readable_prediction(mdl, pre_trans, './data/doggy_door_images/happy_dog.jpg')
-    readable_prediction(mdl, pre_trans, './data/doggy_door_images/brown_bear.jpg')
-    readable_prediction(mdl, pre_trans, './data/doggy_door_images/sleepy_cat.jpg')
+    readable_prediction(mdl, pre_trans, '../data/doggy_door_images/happy_dog.jpg')
+    readable_prediction(mdl, pre_trans, '../data/doggy_door_images/brown_bear.jpg')
+    readable_prediction(mdl, pre_trans, '../data/doggy_door_images/sleepy_cat.jpg')
 
-    doggy_door(mdl, pre_trans, './data/doggy_door_images/happy_dog.jpg')
-    doggy_door(mdl, pre_trans, './data/doggy_door_images/brown_bear.jpg')
-    doggy_door(mdl, pre_trans, './data/doggy_door_images/sleepy_cat.jpg')
+    doggy_door(mdl, pre_trans, '../data/doggy_door_images/happy_dog.jpg')
+    doggy_door(mdl, pre_trans, '../data/doggy_door_images/brown_bear.jpg')
+    doggy_door(mdl, pre_trans, '../data/doggy_door_images/sleepy_cat.jpg')

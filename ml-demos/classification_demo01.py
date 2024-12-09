@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 
-df = pandas.read_csv('../datasets/comedy_show_data.csv')
+df = pandas.read_csv('../data/comedy_show_data.csv')
 d = {'UK': 0, 'USA': 1, 'N': 2}
 df['Nationality'] = df['Nationality'].map(d)
 d = {'YES': 1, 'NO': 0}

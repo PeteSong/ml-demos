@@ -3,8 +3,7 @@ import pandas as pd
 import torch
 import torch.nn as nn
 from torch.optim import Adam
-from torch.utils.data import Dataset, DataLoader
-
+from torch.utils.data import DataLoader, Dataset
 from utils import get_device, load_saved_model, save_model, train_some_times
 
 
@@ -24,13 +23,15 @@ class MyDataset(Dataset):
 
 def load_data(device):
     def check_data():
-        print(f'''
+        print(
+            f'''
         train x => shape: {x_train.shape}
         train y => shape: {y_train.shape}
 
         valid x => shape: {x_valid.shape}
         valid y => shape: {y_valid.shape}
-        ''')
+        '''
+        )
 
     def imshow_sample_data():
         plt.figure(figsize=(40, 40))
@@ -44,8 +45,8 @@ def load_data(device):
             plt.axis('off')
             plt.imshow(image, cmap='gray')
 
-    train_df = pd.read_csv('./data/asl_data/sign_mnist_train.csv')
-    valid_df = pd.read_csv('./data/asl_data/sign_mnist_valid.csv')
+    train_df = pd.read_csv('../data/asl_data/sign_mnist_train.csv')
+    valid_df = pd.read_csv('../data/asl_data/sign_mnist_valid.csv')
 
     y_train = train_df.pop('label')
     x_train = train_df.to_numpy()
@@ -82,7 +83,7 @@ def init_model(device):
         nn.ReLU(),  # Activation for input
         nn.Linear(FEATURE_SIZE, FEATURE_SIZE),  # hidden layer
         nn.ReLU(),  # Activation for hidden layer
-        nn.Linear(FEATURE_SIZE, n_class)  # output layer
+        nn.Linear(FEATURE_SIZE, n_class),  # output layer
     )
     model.to(device)
     if torch.cuda.is_available():
@@ -103,16 +104,18 @@ def predict(model, arg, expected_output):
         is_passed = indices.item() == expected_output
     true_count = is_passed.sum().item()
     false_count = len(is_passed) - true_count
-    print(f'''
+    print(
+        f'''
     Indices of the maximum values in Prediction: {indices}
     expected output: {expected_output}
     Is passed: {is_passed}
     Passed Count - True: {true_count}, False: {false_count}
-    ''')
+    '''
+    )
 
 
 if __name__ == '__main__':
-    ASL_MODEL_PATH = './saved_models/asl_mode.pth'
+    ASL_MODEL_PATH = '../saved_models/asl_mode.pth'
     device = get_device()
     train_loader, valid_loader = load_data(device)
 

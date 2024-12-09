@@ -7,9 +7,7 @@ import torchvision
 import torchvision.transforms.v2 as transforms
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-
-from utils import get_device, save_model, load_saved_model, train_some_times
-
+from utils import get_device, load_saved_model, save_model, train_some_times
 
 # import torchvision.transforms.functional as F
 # import matplotlib.pyplot as plt
@@ -17,7 +15,8 @@ from utils import get_device, save_model, load_saved_model, train_some_times
 # print(f'torch version: {torch.__version__}, torchvision version: {torchvision.__version__}')
 
 
-########## Load data
+# ######### Load data
+
 
 def load_data():
     def check_dataset():
@@ -31,17 +30,8 @@ def load_data():
         print(f'x_0 => type:{type(x_0)}, value:{x_0}')
         print(f'y_0 => type:{type(y_0)}, value:{y_0}')
 
-        # x_0_tensor = trans(x_0)
-        # print(f'x_0_tensor => type:{type(x_0_tensor)}, size:{x_0_tensor.size()}, device:{x_0_tensor.device}, value:{x_0_tensor}')
-        # 把这个 张量 交给 GPU 处理
-        # x_0_tensor.to(device)
-        # print(f'x_0_tensor -> device:{x_0_tensor.to(device).device}')
-
-        # image = F.to_pil_image(x_0_tensor)
-        # plt.imshow(image, cmap='gray')
-
-    train_set = torchvision.datasets.MNIST('./data/', train=True, download=True)
-    valid_set = torchvision.datasets.MNIST('./data/', train=False, download=True)
+    train_set = torchvision.datasets.MNIST('../data/', train=True, download=True)
+    valid_set = torchvision.datasets.MNIST('../data/', train=False, download=True)
 
     # check_dataset()
 
@@ -59,7 +49,8 @@ def load_data():
     return train_set, valid_set, train_loader, valid_loader
 
 
-########## Define model
+# ######### Define model
+
 
 def init_model():
     # 通道数 * 垂直像素数 * 水平像素数
@@ -101,19 +92,21 @@ def predict(model, arg, expected_output):
         isPassed = indices.eq(expected_output)
     else:
         isPassed = indices.item() == expected_output
-    print(f'''
+    print(
+        f'''
     prediction: {prediction}
     Indices of the maximum values in Prediction: {indices}
     expected output: {expected_output}
     Is passed: {isPassed}
-    ''')
+    '''
+    )
 
 
 ########## Train model
 
 
 if __name__ == '__main__':
-    MNIST_MODEL_PATH = './saved_models/mnist_mode.pth'
+    MNIST_MODEL_PATH = '../saved_models/mnist_mode.pth'
     train_set, valid_set, train_loader, valid_loader = load_data()
 
     import os

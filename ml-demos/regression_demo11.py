@@ -19,10 +19,12 @@ knn2 = KNeighborsClassifier(n_neighbors=5)
 knn2.fit(data, classes)
 prediction2 = knn2.predict(new_point)
 
-print(f'''
+print(
+    f'''
 KNN with neighbor=1, prediction is {prediction}
 KNN with neighbor=5, prediction is {prediction2}
-''')
+'''
+)
 
 fig, axs = plt.subplots(1, 3)
 

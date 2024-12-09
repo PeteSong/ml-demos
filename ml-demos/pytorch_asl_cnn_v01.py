@@ -3,7 +3,6 @@ import torch
 import torch.nn as nn
 from torch.optim import Adam
 from torch.utils.data import DataLoader, Dataset
-
 from utils import get_device, load_saved_model, save_model, train_some_times
 
 IMG_HEIGHT = 28
@@ -30,8 +29,8 @@ class MyDataset(Dataset):
 
 
 def load_data(device):
-    train_df = pd.read_csv('./data/asl_data/sign_mnist_train.csv')
-    valid_df = pd.read_csv('./data/asl_data/sign_mnist_valid.csv')
+    train_df = pd.read_csv('../data/asl_data/sign_mnist_train.csv')
+    valid_df = pd.read_csv('../data/asl_data/sign_mnist_valid.csv')
 
     BATCH_SIZE = 32
     train_data = MyDataset(train_df, device)
@@ -53,26 +52,23 @@ def init_model(device):
         nn.BatchNorm2d(25),
         nn.ReLU(),
         nn.MaxPool2d(2, stride=2),  # 25 * 14 * 14
-
         # Second convolution
         nn.Conv2d(25, 50, kernel_size, stride=1, padding=1),  # 50 * 14 * 14
         nn.BatchNorm2d(50),
         nn.ReLU(),
-        nn.Dropout(.2),
+        nn.Dropout(0.2),
         nn.MaxPool2d(2, stride=2),  # 50 * 7 * 7
-
         # Third convolution
         nn.Conv2d(50, 75, kernel_size, stride=1, padding=1),  # 75 * 7 * 7
         nn.BatchNorm2d(75),
         nn.ReLU(),
         nn.MaxPool2d(2, stride=2),  # 75 * 3 * 3
-
         # Flatten to Dense
         nn.Flatten(),
         nn.Linear(flattened_img_size, 512),
-        nn.Dropout(.3),
+        nn.Dropout(0.3),
         nn.ReLU(),
-        nn.Linear(512, n_classes)
+        nn.Linear(512, n_classes),
     )
     model.to(device)
     if torch.cuda.is_available():
@@ -90,16 +86,18 @@ def predict(model, arg, expected_output):
     is_passed = indices.eq(expected_output)
     true_count = is_passed.sum().item()
     false_count = len(is_passed) - true_count
-    print(f'''
+    print(
+        f'''
     Indices of the maximum values in Prediction: {indices}
     expected output: {expected_output}
     Is passed: {is_passed}
     Passed Count - True: {true_count}, False: {false_count}
-    ''')
+    '''
+    )
 
 
 if __name__ == '__main__':
-    ASL_NN_MODEL_PATH = './saved_models/asl_nn_mode_v01.pth'
+    ASL_NN_MODEL_PATH = '../saved_models/asl_nn_mode_v01.pth'
     device = get_device()
     train_loader, valid_loader = load_data(device)
 

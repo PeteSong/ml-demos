@@ -1,5 +1,5 @@
 import numpy
-from sklearn import linear_model, datasets
+from sklearn import datasets, linear_model
 
 
 def logic2prob(logr, X):

@@ -3,15 +3,12 @@ from pathlib import Path
 
 import torch
 import torch.nn as nn
-import torchvision.transforms.v2 as transforms
-from PIL import Image
-from torch.optim import Adam
-from torch.utils.data import Dataset, DataLoader
-from torchvision.models import VGG16_Weights
-from torchvision.models import vgg16
 import torchvision.io as tv_io
-
-from utils import get_device, show_image, load_saved_model, save_model, train_some_times
+import torchvision.transforms.v2 as transforms
+from torch.optim import Adam
+from torch.utils.data import DataLoader, Dataset
+from torchvision.models import VGG16_Weights, vgg16
+from utils import get_device, load_saved_model, save_model, show_image, train_some_times
 
 
 def load_and_process_image(img_path, pre_transforms, device, enhance_transforms=None, show_img=False):
@@ -20,8 +17,8 @@ def load_and_process_image(img_path, pre_transforms, device, enhance_transforms=
     img = tv_io.read_image(img_path, tv_io.ImageReadMode.RGB)
     img_tensor = pre_transforms(img).to(device)
     # with Image.open(img_path) as img:
-        # transform image data to fit the model
-        # img_tensor = pre_transforms(img).to(device)
+    # transform image data to fit the model
+    # img_tensor = pre_transforms(img).to(device)
     # enhance data
     if enhance_transforms:
         img_tensor = enhance_transforms(img_tensor)
@@ -42,7 +39,6 @@ def load_vgg_transforms():
 
 def init_model(device):
     vgg_mdl = load_vgg_model()
-    vgg_trans = load_vgg_transforms()
 
     # VGG16 model Frozen
     vgg_mdl.requires_grad_(False)
@@ -55,15 +51,17 @@ def init_model(device):
         vgg_mdl.classifier[0:3],
         nn.Linear(4096, 500),
         nn.ReLU(),
-        nn.Linear(500, n_classes)
+        nn.Linear(500, n_classes),
     )
     my_model.to(device)
     if torch.cuda.is_available():
         my_model.compile()
     return my_model
 
+
 DATA_LABELS = ["freshapples", "freshbanana", "freshoranges", "rottenapples", "rottenbanana", "rottenoranges"]
 IMG_SIZE = (224, 224)
+
 
 class MyDataset(Dataset):
     def __init__(self, data_dir, pre_transforms, device):
@@ -84,12 +82,14 @@ class MyDataset(Dataset):
         # In MAC, `antialias` is not implemented for MPS
         if torch.backends.mps.is_available():
             antialias = False
-        self.transforms = transforms.Compose([
-            transforms.RandomRotation(25),
-            transforms.RandomResizedCrop(IMG_SIZE, scale=(.8, 1), ratio=(1, 1), antialias=antialias),
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomVerticalFlip()
-        ])
+        self.transforms = transforms.Compose(
+            [
+                transforms.RandomRotation(25),
+                transforms.RandomResizedCrop(IMG_SIZE, scale=(0.8, 1), ratio=(1, 1), antialias=antialias),
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomVerticalFlip(),
+            ]
+        )
 
     def __getitem__(self, idx):
         img_path = self.img_paths[idx]
@@ -103,11 +103,11 @@ class MyDataset(Dataset):
 
 def load_fruits_data(pre_transforms, device):
     n = 32
-    tr_path = './data/fruits/train/'
+    tr_path = '../data/fruits/train/'
     tr_data = MyDataset(tr_path, pre_transforms, device)
     tr_loader = DataLoader(tr_data, batch_size=n, shuffle=True)
 
-    vld_path = './data/fruits/valid/'
+    vld_path = '../data/fruits/valid/'
     vld_data = MyDataset(vld_path, pre_transforms, device)
     vld_loader = DataLoader(vld_data, batch_size=n)
 
@@ -127,7 +127,7 @@ def predict(model, pre_transforms, img_path):
 
 
 if __name__ == '__main__':
-    VGG_FRUITS_MODEL_PATH = './saved_models/vgg_fruits_model.pth'
+    VGG_FRUITS_MODEL_PATH = '../saved_models/vgg_fruits_model.pth'
     dvc = get_device()
     pre_trans = load_vgg_transforms()
     train_loader, valid_loader = load_fruits_data(pre_trans, dvc)
@@ -141,9 +141,9 @@ if __name__ == '__main__':
         train_some_times(model, train_loader, valid_loader, loss_func, optimizer, 10)
         save_model(model, VGG_FRUITS_MODEL_PATH)
 
-    predict(model, pre_trans, './data/fruits/valid/freshapples/Screen Shot 2018-06-08 at 5.01.15 PM.png')
-    predict(model, pre_trans, './data/fruits/valid/freshbanana/Screen Shot 2018-06-12 at 9.38.04 PM.png')
-    predict(model, pre_trans, './data/fruits/valid/freshoranges/Screen Shot 2018-06-12 at 11.50.41 PM.png')
-    predict(model, pre_trans, './data/fruits/valid/rottenapples/Screen Shot 2018-06-07 at 2.20.04 PM.png')
-    predict(model, pre_trans, './data/fruits/valid/rottenbanana/Screen Shot 2018-06-12 at 8.51.00 PM.png')
-    predict(model, pre_trans, './data/fruits/valid/rottenoranges/Screen Shot 2018-06-12 at 11.19.56 PM.png')
+    predict(model, pre_trans, '../data/fruits/valid/freshapples/Screen Shot 2018-06-08 at 5.01.15 PM.png')
+    predict(model, pre_trans, '../data/fruits/valid/freshbanana/Screen Shot 2018-06-12 at 9.38.04 PM.png')
+    predict(model, pre_trans, '../data/fruits/valid/freshoranges/Screen Shot 2018-06-12 at 11.50.41 PM.png')
+    predict(model, pre_trans, '../data/fruits/valid/rottenapples/Screen Shot 2018-06-07 at 2.20.04 PM.png')
+    predict(model, pre_trans, '../data/fruits/valid/rottenbanana/Screen Shot 2018-06-12 at 8.51.00 PM.png')
+    predict(model, pre_trans, '../data/fruits/valid/rottenoranges/Screen Shot 2018-06-12 at 11.19.56 PM.png')

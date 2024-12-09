@@ -5,11 +5,11 @@ import torchvision.transforms.functional as F
 
 
 def get_device():
-    s = 'cpu'
+    s = "cpu"
     if torch.cuda.is_available():
-        s = 'cuda'
+        s = "cuda"
     elif torch.backends.mps.is_available():
-        s = 'mps'
+        s = "mps"
     # print(s)
     return torch.device(s)
 
@@ -65,7 +65,7 @@ def train(model, train_loader, loss_func, optimizer):
 
         loss += batch_loss.item()
         accuracy += get_batch_accuracy(output, y, train_N)
-    print(f'Train => Loss:{loss:.4f}, Accuracy:{accuracy:.4f}, count: {c}')
+    print(f"Train => Loss:{loss:.4f}, Accuracy:{accuracy:.4f}, count: {c}")
 
 
 def validate(model, valid_loader, loss_func):
@@ -84,19 +84,19 @@ def validate(model, valid_loader, loss_func):
 
             loss += loss_func(output, y).item()
             accuracy += get_batch_accuracy(output, y, valid_N)
-    print(f'Valid => Loss:{loss:.4f}, Accuracy:{accuracy:.4f}')
+    print(f"Valid => Loss:{loss:.4f}, Accuracy:{accuracy:.4f}")
 
 
 def train_some_times(model, train_loader, valid_loader, loss_func, optimizer, epochs=5):
     for epoch in range(epochs):
-        print('Epoch: {}'.format(epoch))
+        print("Epoch: {}".format(epoch))
         train(model, train_loader, loss_func, optimizer)
         validate(model, valid_loader, loss_func)
 
 
 def show_image(image_path):
     image = mpimg.imread(image_path)
-    plt.imshow(image, cmap='gray')
+    plt.imshow(image, cmap="gray")
     # plt.ion()
     plt.pause(0.5)
     # plt.show()
@@ -104,5 +104,5 @@ def show_image(image_path):
 
 def show_processed_image(processed_image):
     plot_image = F.to_pil_image(torch.squeeze(processed_image))
-    plt.imshow(plot_image, cmap='gray')
+    plt.imshow(plot_image, cmap="gray")
     plt.pause(0.3)

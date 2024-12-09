@@ -1,5 +1,5 @@
-import numpy
 import matplotlib.pyplot as plt
+import numpy
 
 # draw data from uniform data distribution 均匀分布
 x = numpy.random.uniform(0.0, 5.0, 100000)

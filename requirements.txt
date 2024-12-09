@@ -1,7 +1,10 @@
+importlib_metadata==8.5.0
 matplotlib==3.9.3
 pandas==2.2.3
 protobuf==5.29.1
 sacremoses==0.1.1
+scikit-learn==1.5.2
+scipy==1.14.1
 sentencepiece==0.2.0
 torch==2.5.1
 torchaudio==2.5.1
