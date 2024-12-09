@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import torch
-import torch.nn as nn
+from torch import nn
 from torch.optim import Adam
 from torch.utils.data import DataLoader, Dataset
 from utils import get_device, load_saved_model, save_model, train_some_times
@@ -57,18 +57,18 @@ def load_data(device):
     check_data()
     imshow_sample_data()
 
-    MAX_PIXEL_VALUE = 255
+    max_pixel_value = 255
     # scaling the data (standardization)
-    x_train = x_train / MAX_PIXEL_VALUE
-    x_valid = x_valid / MAX_PIXEL_VALUE
+    x_train = x_train / max_pixel_value
+    x_valid = x_valid / max_pixel_value
 
-    BATCH_SIZE = 32
+    batch_size = 32
     train_data = MyDataset(x_train, y_train, device)
-    train_loader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
+    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
     # train_N = len(train_loader.dataset)
 
     valid_data = MyDataset(x_valid, y_valid, device)
-    valid_loader = DataLoader(valid_data, batch_size=BATCH_SIZE, shuffle=True)
+    valid_loader = DataLoader(valid_data, batch_size=batch_size, shuffle=True)
     # valid_N = len(valid_loader.dataset)
     return train_loader, valid_loader
 
@@ -76,14 +76,14 @@ def load_data(device):
 def init_model(device):
     input_size = 1 * 28 * 28
     n_class = 24
-    FEATURE_SIZE = 512
+    feature_size = 512
     model = nn.Sequential(
         nn.Flatten(),  # 将 n维张量 变成 二维向量
-        nn.Linear(input_size, FEATURE_SIZE),  # input layer
+        nn.Linear(input_size, feature_size),  # input layer
         nn.ReLU(),  # Activation for input
-        nn.Linear(FEATURE_SIZE, FEATURE_SIZE),  # hidden layer
+        nn.Linear(feature_size, feature_size),  # hidden layer
         nn.ReLU(),  # Activation for hidden layer
-        nn.Linear(FEATURE_SIZE, n_class),  # output layer
+        nn.Linear(feature_size, n_class),  # output layer
     )
     model.to(device)
     if torch.cuda.is_available():

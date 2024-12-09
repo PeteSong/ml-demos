@@ -3,9 +3,9 @@ import os
 from pathlib import Path
 
 import torch
-import torch.nn as nn
 import torchvision.transforms.v2 as transforms
 from PIL import Image
+from torch import nn
 from torch.optim import Adam
 from torch.utils.data import DataLoader, Dataset
 from torchvision.models import VGG16_Weights, vgg16
@@ -40,8 +40,8 @@ def init_model(device):
     vgg_mdl, pre_trans = load_vgg_model(device), load_vgg_transforms()
     vgg_mdl.requires_grad_(False)
     print('VGG16 Frozen')
-    N_CLASSES = 1
-    my_model = nn.Sequential(vgg_mdl, nn.Linear(1000, N_CLASSES))
+    n_classes = 1
+    my_model = nn.Sequential(vgg_mdl, nn.Linear(1000, n_classes))
     my_model.to(device)
     # check the parameters
     # for idx, param in enumerate(my_model.parameters()):

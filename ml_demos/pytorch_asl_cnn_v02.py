@@ -1,8 +1,8 @@
 import pandas as pd
 import torch
-import torch.nn as nn
 import torchvision.io as tv_io
 import torchvision.transforms.v2 as transforms
+from torch import nn
 from torch.optim import Adam
 from torch.utils.data import DataLoader, Dataset
 from utils import get_device, load_saved_model, save_model, show_image, train_some_times
@@ -48,12 +48,12 @@ def load_data(device):
     train_df = pd.read_csv('../data/asl_data/sign_mnist_train.csv')
     valid_df = pd.read_csv('../data/asl_data/sign_mnist_valid.csv')
 
-    BATCH_SIZE = 32
+    batch_size = 32
     train_data = MyDataset(train_df, device)
-    train_loader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
+    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
 
     valid_data = MyDataset(valid_df, device)
-    valid_loader = DataLoader(valid_data, batch_size=BATCH_SIZE, shuffle=True)
+    valid_loader = DataLoader(valid_data, batch_size=batch_size, shuffle=True)
     return train_loader, valid_loader
 
 

@@ -2,9 +2,9 @@ import os
 from pathlib import Path
 
 import torch
-import torch.nn as nn
 import torchvision.io as tv_io
 import torchvision.transforms.v2 as transforms
+from torch import nn
 from torch.optim import Adam
 from torch.utils.data import DataLoader, Dataset
 from torchvision.models import VGG16_Weights, vgg16

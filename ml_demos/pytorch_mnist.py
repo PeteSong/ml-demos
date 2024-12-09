@@ -2,9 +2,9 @@
 # device: MBP M3
 
 import torch
-import torch.nn as nn
 import torchvision
 import torchvision.transforms.v2 as transforms
+from torch import nn
 from torch.optim import Adam
 from torch.utils.data import DataLoader
 from utils import get_device, load_saved_model, save_model, train_some_times
